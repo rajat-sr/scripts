@@ -1,5 +1,10 @@
 source ~/.bash_prompt
 
+# include .bashrc if it exists
+if [ -f "$HOME/.bashrc" ]; then
+    . "$HOME/.bashrc"
+fi
+
 if [ -f ~/.git-completion.bash ]; then
   . ~/.git-completion.bash
 fi
@@ -12,6 +17,22 @@ alias .....="cd ../../../.."
 alias ~="cd ~" # `cd` is probably faster to type though
 alias -- -="cd -"
 alias mongod="mongod --config /usr/local/etc/mongod.conf"
+
+# git aliases
+alias gupdatebranch="git checkout master && git pull && git checkout - && git rebase master"
+alias gpush="git push origin HEAD"
+alias gfpush="git push -f origin HEAD"
+alias gwip='git add -A; git rm $(git ls-files --deleted) 2> /dev/null; git commit --no-verify --no-gpg-sign -m "--wip-- [skip ci]"'
+alias gunwip='git log -n 1 | grep -q -c "\-\-wip\-\-" && git reset HEAD~1'
+alias gsts='git stash -- $(git diff --staged --name-only)'
+# usage `gmove branchname master` - goolge for more info
+gmove() {
+  git stash -- $(git diff --staged --name-only) &&
+  gwip ;
+  git branch $1 $2 &&
+  git checkout $1 &&
+  git stash pop
+}
 
 # Detect which `ls` flavor is in use
 if ls --color > /dev/null 2>&1; then # GNU `ls`
@@ -42,3 +63,16 @@ alias path='echo -e ${PATH//:/\\n}'
 
 #export PATH="/usr/local/opt/mongodb-community@3.2/bin:$PATH"
 #export PATH="/usr/local/opt/mongodb-community@3.6/bin:$PATH"
+
+export PYENV_ROOT="$HOME/.pyenv"
+command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
+export PATH="$HOME/.poetry/bin:$PATH"
+eval $(/opt/homebrew/bin/brew shellenv)
+
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/rajat/google-cloud-sdk/path.bash.inc' ]; then . '/Users/rajat/google-cloud-sdk/path.bash.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/rajat/google-cloud-sdk/completion.bash.inc' ]; then . '/Users/rajat/google-cloud-sdk/completion.bash.inc'; fi
