@@ -1,3 +1,8 @@
+# Change default macOS terminal shell to bash
+Just run this in the terminal and enter password
+`chsh -s /bin/bash`
+
+
 # .git-completion.bash
 Find the latest version in the original git repo (https://github.com/git/git/blob/master/contrib/completion/git-completion.bash)
 
